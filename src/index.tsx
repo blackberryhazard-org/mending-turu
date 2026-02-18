@@ -5,6 +5,7 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { Calculate } from "./routes/calculate";
 import { Home } from "./components/Home";
 import { openApiSpec } from "./docs/openapi";
+import { randomRange } from "./utils";
 
 const apiApp = new Hono();
 apiApp.use(prettyJSON());
@@ -23,6 +24,7 @@ apiApp.get("/", (c) => {
                 license: "MIT",
                 github: "https://github.com/indra87g/turu-api",
                 status: "https://stats.uptimerobot.com/6tNlOje1Uv",
+                randomNumber: randomRange(1, 1000),
         });
 });
 apiApp.get("/hello/:name", (c) => {

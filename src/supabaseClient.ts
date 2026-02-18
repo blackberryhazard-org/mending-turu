@@ -1,8 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { Context } from "hono";
 
-// Define a type for the environment variables
-// This ensures that c.env has the correct types
 export type Env = {
 	SUPABASE_URL: string;
 	SUPABASE_ANON_KEY: string;
