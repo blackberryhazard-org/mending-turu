@@ -30,7 +30,7 @@ export const openApiSpec = {
 									mode: {
 										type: "string",
 										description:
-											"Mode (e.g. full, screenshot, turnstile-min, cf_clearance)",
+											"Mode (e.g. full, turnstile-min, cf_clearance)",
 										default: "full",
 									},
 									timeout: {
@@ -51,6 +51,45 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "Solve result",
+					},
+					"400": {
+						description: "Invalid parameters",
+					},
+					"500": {
+						description: "Internal server error",
+					},
+				},
+			},
+		},
+		"/ssweb": {
+			post: {
+				summary: "Take a screenshot of a webpage",
+				tags: ["Tools"],
+				requestBody: {
+					required: true,
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									url: {
+										type: "string",
+										description: "URL to capture",
+									},
+									timeout: {
+										type: "number",
+										description: "Timeout in milliseconds",
+										default: 30000,
+									},
+								},
+								required: ["url"],
+							},
+						},
+					},
+				},
+				responses: {
+					"200": {
+						description: "Screenshot URL result",
 					},
 					"400": {
 						description: "Invalid parameters",
