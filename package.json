@@ -6,6 +6,7 @@
 		"format": "biome format . --write"
 	},
 	"dependencies": {
+		"@cloudflare/puppeteer": "^1.1.0",
 		"@hono/swagger-ui": "^0.4.1",
 		"@supabase/supabase-js": "^2.57.4",
 		"dotenv": "^16.4.5",

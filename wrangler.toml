@@ -1,10 +1,11 @@
 name = "turu-api"
 main = "src/index.tsx"
-minify = true
 compatibility_flags = [ "nodejs_compat" ]
-compatibility_date = "2025-12-25"
+compatibility_date = "2024-03-20"
 
 workers_dev = false
+
+browser = { binding = "MYBROWSER" }
 
 kv_namespaces = [
   { binding = "turu-api", id = "2a36c828053a4a34be324632ecf2f193" }

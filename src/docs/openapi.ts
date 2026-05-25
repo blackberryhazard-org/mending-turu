@@ -12,6 +12,55 @@ export const openApiSpec = {
 	},
 	servers: [{ url: "/api" }],
 	paths: {
+		"/solve": {
+			post: {
+				summary: "Solve Cloudflare Turnstile/Captcha",
+				tags: ["Solver"],
+				requestBody: {
+					required: true,
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									url: {
+										type: "string",
+										description: "URL to solve",
+									},
+									mode: {
+										type: "string",
+										description:
+											"Mode (e.g. full, screenshot, turnstile-min, cf_clearance)",
+										default: "full",
+									},
+									timeout: {
+										type: "number",
+										description: "Timeout in milliseconds",
+										default: 30000,
+									},
+									proxy: {
+										type: "string",
+										description: "Proxy server string (optional)",
+									},
+								},
+								required: ["url"],
+							},
+						},
+					},
+				},
+				responses: {
+					"200": {
+						description: "Solve result",
+					},
+					"400": {
+						description: "Invalid parameters",
+					},
+					"500": {
+						description: "Internal server error",
+					},
+				},
+			},
+		},
 		"/": {
 			get: {
 				summary: "Get API information",
