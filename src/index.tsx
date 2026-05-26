@@ -4,6 +4,7 @@ import { swaggerUI } from "@hono/swagger-ui";
 
 import { Calculate } from "./routes/calculate";
 import { Solve } from "./routes/solve";
+import { Ssweb } from "./routes/ssweb";
 import { Home } from "./components/Home";
 import { openApiSpec } from "./docs/openapi";
 import { randomRange } from "./utils";
@@ -34,6 +35,7 @@ apiApp.get("/hello/:name", (c) => {
 });
 apiApp.route("/calculate", Calculate);
 apiApp.route("/solve", Solve);
+apiApp.route("/ssweb", Ssweb);
 
 const app = new Hono();
 

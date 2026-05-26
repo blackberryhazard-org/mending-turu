@@ -96,15 +96,6 @@ solve.post("/", async (c) => {
 
 			const liveUA = await page.evaluate(() => navigator.userAgent);
 			result = { token: turnstileToken, user_agent: liveUA };
-		} else if (mode === "screenshot") {
-			await new Promise((resolve) => setTimeout(resolve, 2000));
-			const screenshot = await page.screenshot({
-				encoding: "base64",
-				fullPage: false,
-			});
-			const cookies = await page.cookies();
-			const liveUA = await page.evaluate(() => navigator.userAgent);
-			result = { screenshot, cookies, user_agent: liveUA };
 		} else {
 			// Try waiting for some time to bypass basic challenges
 			await new Promise((resolve) => setTimeout(resolve, 5000));
