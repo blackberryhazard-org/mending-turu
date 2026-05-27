@@ -12,6 +12,86 @@ export const openApiSpec = {
 	},
 	servers: [{ url: "/api" }],
 	paths: {
+		"/cf-solve": {
+			get: {
+				summary: "Solve Cloudflare Turnstile/Captcha",
+				tags: ["Solver"],
+				parameters: [
+					{
+						name: "url",
+						in: "query",
+						required: true,
+						description: "URL to solve",
+						schema: { type: "string" },
+					},
+					{
+						name: "mode",
+						in: "query",
+						required: false,
+						description: "Mode (e.g. full, turnstile-min, cf_clearance)",
+						schema: { type: "string", default: "full" },
+					},
+					{
+						name: "timeout",
+						in: "query",
+						required: false,
+						description: "Timeout in milliseconds",
+						schema: { type: "number", default: 30000 },
+					},
+					{
+						name: "proxy",
+						in: "query",
+						required: false,
+						description: "Proxy server string (optional)",
+						schema: { type: "string" },
+					},
+				],
+				responses: {
+					"200": {
+						description: "Solve result",
+					},
+					"400": {
+						description: "Invalid parameters",
+					},
+					"500": {
+						description: "Internal server error",
+					},
+				},
+			},
+		},
+		"/ssweb": {
+			get: {
+				summary: "Take a screenshot of a webpage",
+				tags: ["Tools"],
+				parameters: [
+					{
+						name: "url",
+						in: "query",
+						required: true,
+						description: "URL to capture",
+						schema: { type: "string" },
+					},
+					{
+						name: "timeout",
+						in: "query",
+						required: false,
+						description: "Timeout in milliseconds",
+						schema: { type: "number", default: 30000 },
+					},
+				],
+				responses: {
+					"200": {
+						description: "Screenshot URL result",
+					},
+					"400": {
+						description: "Invalid parameters",
+					},
+					"500": {
+						description: "Internal server error",
+					},
+				},
+			},
+		},
 		"/": {
 			get: {
 				summary: "Get API information",

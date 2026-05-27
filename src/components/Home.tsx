@@ -1,6 +1,18 @@
 import type { FC } from "hono/jsx";
 
-export const Home: FC = () => {
+export interface HomeProps {
+	userIp: string;
+	endpointsCount: number;
+	pingMs: number;
+	gitCommit: string;
+}
+
+export const Home: FC<HomeProps> = ({
+	userIp,
+	endpointsCount,
+	pingMs,
+	gitCommit,
+}) => {
 	return (
 		<html lang="en">
 			<head>
@@ -18,7 +30,8 @@ export const Home: FC = () => {
           
           body {
               font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              background: #0f172a;
+              color: #f8fafc;
               min-height: 100vh;
               display: flex;
               align-items: center;
@@ -27,29 +40,31 @@ export const Home: FC = () => {
           }
           
           .container {
-              background: white;
+              background: #1e293b;
+              border: 1px solid #334155;
               border-radius: 12px;
-              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-              max-width: 600px;
+              box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+              max-width: 650px;
+              width: 100%;
               padding: 40px;
               text-align: center;
           }
           
           h1 {
-              color: #333;
+              color: #f1f5f9;
               margin-bottom: 10px;
               font-size: 2.5em;
           }
           
           .subtitle {
-              color: #666;
+              color: #94a3b8;
               font-size: 1.1em;
               margin-bottom: 30px;
               font-style: italic;
           }
           
           .description {
-              color: #555;
+              color: #cbd5e1;
               line-height: 1.6;
               margin-bottom: 30px;
               font-size: 1em;
@@ -64,14 +79,14 @@ export const Home: FC = () => {
           }
           
           .info-item {
-              background: #f8f9fa;
+              background: #0f172a;
               padding: 15px;
               border-radius: 8px;
-              border-left: 4px solid #667eea;
+              border-left: 4px solid #ef4444;
           }
           
           .info-label {
-              color: #999;
+              color: #64748b;
               font-size: 0.85em;
               text-transform: uppercase;
               margin-bottom: 5px;
@@ -79,7 +94,7 @@ export const Home: FC = () => {
           }
           
           .info-value {
-              color: #333;
+              color: #f1f5f9;
               font-size: 1.1em;
               font-weight: 500;
               word-break: break-all;
@@ -103,48 +118,37 @@ export const Home: FC = () => {
               font-size: 0.95em;
           }
           
-          .btn-docs {
-              background: #667eea;
+          .btn-primary {
+              background: #ef4444;
               color: white;
           }
           
-          .btn-docs:hover {
-              background: #5568d3;
+          .btn-primary:hover {
+              background: #dc2626;
               transform: translateY(-2px);
-              box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+              box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
           }
           
-          .btn-github {
-              background: #333;
+          .btn-secondary {
+              background: #334155;
               color: white;
           }
           
-          .btn-github:hover {
-              background: #000;
+          .btn-secondary:hover {
+              background: #1e293b;
               transform: translateY(-2px);
               box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-          }
-          
-          .btn-api {
-              background: #764ba2;
-              color: white;
-          }
-          
-          .btn-api:hover {
-              background: #653b8a;
-              transform: translateY(-2px);
-              box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
           }
           
           .status {
               margin-top: 30px;
               padding-top: 20px;
-              border-top: 1px solid #eee;
+              border-top: 1px solid #334155;
           }
           
           .status-badge {
               display: inline-block;
-              background: #4caf50;
+              background: #ef4444;
               color: white;
               padding: 6px 12px;
               border-radius: 20px;
@@ -189,25 +193,35 @@ export const Home: FC = () => {
 							<div className="info-value">indra87g</div>
 						</div>
 						<div className="info-item">
-							<div className="info-label">License</div>
-							<div className="info-value">MIT</div>
+							<div className="info-label">User IP</div>
+							<div className="info-value">{userIp}</div>
 						</div>
 						<div className="info-item">
-							<div className="info-label">Status</div>
-							<div className="info-value">Active</div>
+							<div className="info-label">Endpoints</div>
+							<div className="info-value">{endpointsCount}</div>
+						</div>
+						<div className="info-item">
+							<div className="info-label">Ping</div>
+							<div className="info-value">{pingMs} ms</div>
+						</div>
+						<div className="info-item">
+							<div className="info-label">Git Commit</div>
+							<div className="info-value" style={{ fontSize: "0.9em" }}>
+								{gitCommit}
+							</div>
 						</div>
 					</div>
 
 					<div className="links">
-						<a href="/docs" className="btn-docs">
+						<a href="/docs" className="btn-primary">
 							📚 API Documentation
 						</a>
-						<a href="/api" className="btn-api">
+						<a href="/api" className="btn-secondary">
 							⚙️ API Info
 						</a>
 						<a
 							href="https://github.com/indra87g/turu-api"
-							className="btn-github"
+							className="btn-secondary"
 							target="_blank"
 							rel="noreferrer"
 						>
