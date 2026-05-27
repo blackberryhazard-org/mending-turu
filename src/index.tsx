@@ -6,18 +6,20 @@ import { CfSolve } from "./routes/cfSolve";
 import { Ssweb } from "./routes/ssweb";
 import { Home } from "./components/Home";
 import { openApiSpec } from "./docs/openapi";
-import { randomRange } from "./utils";
+import { randomRange, apiError, apiResponse } from "./utils";
 import commitData from "./commit.json";
 
-const apiApp = new Hono();
+const apiApp = new Hono<{ Variables: { start: number } }>();
+apiApp.use("*", async (c, next) => {
+	c.set("start", Date.now());
+	await next();
+});
+
 apiApp.use(prettyJSON());
-apiApp.notFound((c) =>
-	c.json({ success: false, message: "Endpoint not found!" }, 404),
-);
+apiApp.notFound((c) => apiError(c, 404, "Endpoint not found!"));
 
 apiApp.get("/", (c) => {
-	return c.json({
-		success: true,
+	return apiResponse(c, 200, "Success", {
 		name: "TURU REST API",
 		description:
 			"Free REST API for lazy people (fyi: turu is mean sleep in indonesia, Javanese language)",
@@ -31,7 +33,7 @@ apiApp.get("/", (c) => {
 });
 apiApp.get("/hello/:name", (c) => {
 	const name = c.req.param("name");
-	return c.text(`Hello, ${name}!`);
+	return apiResponse(c, 200, "Success", { message: `Hello, ${name}!` });
 });
 apiApp.route("/calculate", Calculate);
 apiApp.route("/cf-solve", CfSolve);

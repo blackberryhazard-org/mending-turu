@@ -1,3 +1,29 @@
+const BaseResponseSchema = {
+	type: "object",
+	properties: {
+		status: { type: "boolean" },
+		code: { type: "integer" },
+		message: { type: "string" },
+		data: { type: "object", additionalProperties: true },
+		meta: {
+			type: "object",
+			properties: {
+				endpoint: { type: "string" },
+				latency: { type: "integer" },
+				timestamp: { type: "integer" },
+			},
+		},
+		credits: {
+			type: "object",
+			properties: {
+				name: { type: "string" },
+				version: { type: "string" },
+				author: { type: "string" },
+			},
+		},
+	},
+};
+
 export const openApiSpec = {
 	openapi: "3.0.0",
 	info: {
@@ -49,12 +75,27 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "Solve result",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"400": {
 						description: "Invalid parameters",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"500": {
 						description: "Internal server error",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
@@ -82,12 +123,27 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "Screenshot URL result",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"400": {
 						description: "Invalid parameters",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"500": {
 						description: "Internal server error",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
@@ -99,6 +155,11 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "API information",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
@@ -118,6 +179,11 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "Greeting message",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
@@ -152,9 +218,19 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "Calculation result",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"400": {
 						description: "Invalid operation or parameters",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
