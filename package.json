@@ -1,6 +1,8 @@
 {
 	"name": "turu-api",
 	"scripts": {
+		"predev": "node generate-commit.js",
+		"predeploy": "node generate-commit.js",
 		"dev": "bun run --hot src/index.tsx",
 		"deploy": "wrangler deploy",
 		"format": "biome format . --write"

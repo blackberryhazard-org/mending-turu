@@ -1,3 +1,29 @@
+const BaseResponseSchema = {
+	type: "object",
+	properties: {
+		status: { type: "boolean" },
+		code: { type: "integer" },
+		message: { type: "string" },
+		data: { type: "object", additionalProperties: true },
+		meta: {
+			type: "object",
+			properties: {
+				endpoint: { type: "string" },
+				latency: { type: "integer" },
+				timestamp: { type: "integer" },
+			},
+		},
+		credits: {
+			type: "object",
+			properties: {
+				name: { type: "string" },
+				version: { type: "string" },
+				author: { type: "string" },
+			},
+		},
+	},
+};
+
 export const openApiSpec = {
 	openapi: "3.0.0",
 	info: {
@@ -12,90 +38,112 @@ export const openApiSpec = {
 	},
 	servers: [{ url: "/api" }],
 	paths: {
-		"/solve": {
-			post: {
+		"/cf-solve": {
+			get: {
 				summary: "Solve Cloudflare Turnstile/Captcha",
 				tags: ["Solver"],
-				requestBody: {
-					required: true,
-					content: {
-						"application/json": {
-							schema: {
-								type: "object",
-								properties: {
-									url: {
-										type: "string",
-										description: "URL to solve",
-									},
-									mode: {
-										type: "string",
-										description:
-											"Mode (e.g. full, turnstile-min, cf_clearance)",
-										default: "full",
-									},
-									timeout: {
-										type: "number",
-										description: "Timeout in milliseconds",
-										default: 30000,
-									},
-									proxy: {
-										type: "string",
-										description: "Proxy server string (optional)",
-									},
-								},
-								required: ["url"],
-							},
-						},
+				parameters: [
+					{
+						name: "url",
+						in: "query",
+						required: true,
+						description: "URL to solve",
+						schema: { type: "string" },
 					},
-				},
+					{
+						name: "mode",
+						in: "query",
+						required: false,
+						description: "Mode (e.g. full, turnstile-min, cf_clearance)",
+						schema: { type: "string", default: "full" },
+					},
+					{
+						name: "timeout",
+						in: "query",
+						required: false,
+						description: "Timeout in milliseconds",
+						schema: { type: "number", default: 30000 },
+					},
+					{
+						name: "proxy",
+						in: "query",
+						required: false,
+						description: "Proxy server string (optional)",
+						schema: { type: "string" },
+					},
+				],
 				responses: {
 					"200": {
 						description: "Solve result",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"400": {
 						description: "Invalid parameters",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"500": {
 						description: "Internal server error",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
 		},
 		"/ssweb": {
-			post: {
+			get: {
 				summary: "Take a screenshot of a webpage",
 				tags: ["Tools"],
-				requestBody: {
-					required: true,
-					content: {
-						"application/json": {
-							schema: {
-								type: "object",
-								properties: {
-									url: {
-										type: "string",
-										description: "URL to capture",
-									},
-									timeout: {
-										type: "number",
-										description: "Timeout in milliseconds",
-										default: 30000,
-									},
-								},
-								required: ["url"],
-							},
-						},
+				parameters: [
+					{
+						name: "url",
+						in: "query",
+						required: true,
+						description: "URL to capture",
+						schema: { type: "string" },
 					},
-				},
+					{
+						name: "timeout",
+						in: "query",
+						required: false,
+						description: "Timeout in milliseconds",
+						schema: { type: "number", default: 30000 },
+					},
+				],
 				responses: {
 					"200": {
 						description: "Screenshot URL result",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"400": {
 						description: "Invalid parameters",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"500": {
 						description: "Internal server error",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
@@ -107,6 +155,11 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "API information",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
@@ -126,6 +179,11 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "Greeting message",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},
@@ -160,9 +218,19 @@ export const openApiSpec = {
 				responses: {
 					"200": {
 						description: "Calculation result",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 					"400": {
 						description: "Invalid operation or parameters",
+						content: {
+							"application/json": {
+								schema: BaseResponseSchema,
+							},
+						},
 					},
 				},
 			},

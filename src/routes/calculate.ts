@@ -1,11 +1,19 @@
 import { Hono } from "hono";
+import { apiResponse, apiError } from "../utils";
 
-const calculate = new Hono();
+const calculate = new Hono<{ Variables: { start: number } }>();
 
 calculate.get("/", (c) => {
 	const operation = c.req.query("operation");
-	const num1 = parseFloat(c.req.query("num1"));
-	const num2 = parseFloat(c.req.query("num2"));
+	const num1Raw = c.req.query("num1");
+	const num2Raw = c.req.query("num2");
+
+	if (!num1Raw || !num2Raw) {
+		return apiError(c, 400, "Missing num1 or num2 parameters");
+	}
+
+	const num1 = parseFloat(num1Raw);
+	const num2 = parseFloat(num2Raw);
 
 	let result;
 
@@ -21,34 +29,15 @@ calculate.get("/", (c) => {
 			break;
 		case "divide":
 			if (num2 === 0) {
-				c.json(
-					{
-						success: false,
-						message: "Cannot divide with zero!",
-					},
-					400,
-				);
+				return apiError(c, 400, "Cannot divide with zero!");
 			}
 			result = num1 / num2;
 			break;
 		default:
-			return c.json(
-				{
-					success: false,
-					message: "Invalid operation!",
-				},
-				400,
-			);
+			return apiError(c, 400, "Invalid operation!");
 	}
 
-	return c.json(
-		{
-			success: true,
-			message: "Operation success",
-			data: result,
-		},
-		200,
-	);
+	return apiResponse(c, 200, "Operation success", result);
 });
 
 export const Calculate = calculate;

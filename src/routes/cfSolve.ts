@@ -1,14 +1,20 @@
 import { Hono } from "hono";
 import puppeteer from "@cloudflare/puppeteer";
+import { apiResponse, apiError } from "../utils";
 
-const solve = new Hono<{ Bindings: { MYBROWSER: any } }>();
+const cfSolve = new Hono<{
+	Bindings: { MYBROWSER: any };
+	Variables: { start: number };
+}>();
 
-solve.post("/", async (c) => {
-	const body = await c.req.json();
-	const { url, mode = "full", timeout = 30000 } = body;
+cfSolve.get("/", async (c) => {
+	const url = c.req.query("url");
+	const mode = c.req.query("mode") || "full";
+	const timeoutParam = c.req.query("timeout");
+	const timeout = timeoutParam ? parseInt(timeoutParam, 10) : 30000;
 
 	if (!url) {
-		return c.json({ status: false, message: "url diperlukan" }, 400);
+		return apiError(c, 400, "url diperlukan");
 	}
 
 	try {
@@ -62,7 +68,6 @@ solve.post("/", async (c) => {
 		let result: any = {};
 
 		if (mode === "turnstile-min") {
-			// Try to wait for token
 			try {
 				await page.waitForFunction(() => !!(window as any).__turnstileToken, {
 					timeout: 15000,
@@ -97,7 +102,6 @@ solve.post("/", async (c) => {
 			const liveUA = await page.evaluate(() => navigator.userAgent);
 			result = { token: turnstileToken, user_agent: liveUA };
 		} else {
-			// Try waiting for some time to bypass basic challenges
 			await new Promise((resolve) => setTimeout(resolve, 5000));
 
 			const liveUA = await page.evaluate(() => navigator.userAgent);
@@ -121,10 +125,10 @@ solve.post("/", async (c) => {
 		}
 
 		await browser.close();
-		return c.json({ status: true, data: result });
+		return apiResponse(c, 200, "Success", result);
 	} catch (e: any) {
-		return c.json({ status: false, message: e.message }, 500);
+		return apiError(c, 500, e.message);
 	}
 });
 
-export const Solve = solve;
+export const CfSolve = cfSolve;

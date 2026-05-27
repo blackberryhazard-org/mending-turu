@@ -1,14 +1,19 @@
 import { Hono } from "hono";
 import puppeteer from "@cloudflare/puppeteer";
+import { apiResponse, apiError } from "../utils";
 
-const ssweb = new Hono<{ Bindings: { MYBROWSER: any } }>();
+const ssweb = new Hono<{
+	Bindings: { MYBROWSER: any };
+	Variables: { start: number };
+}>();
 
-ssweb.post("/", async (c) => {
-	const body = await c.req.json();
-	const { url, timeout = 30000 } = body;
+ssweb.get("/", async (c) => {
+	const url = c.req.query("url");
+	const timeoutParam = c.req.query("timeout");
+	const timeout = timeoutParam ? parseInt(timeoutParam, 10) : 30000;
 
 	if (!url) {
-		return c.json({ status: false, message: "url diperlukan" }, 400);
+		return apiError(c, 400, "url diperlukan");
 	}
 
 	try {
@@ -24,7 +29,6 @@ ssweb.post("/", async (c) => {
 
 		await new Promise((resolve) => setTimeout(resolve, 2000));
 
-		// In Cloudflare Workers, puppeteer returns Uint8Array for buffer
 		const screenshotBuffer = await page.screenshot({
 			type: "png",
 			fullPage: false,
@@ -33,7 +37,6 @@ ssweb.post("/", async (c) => {
 		await browser.close();
 
 		const formData = new FormData();
-		// Cloudflare Workers fetch API natively supports Blob inside FormData
 		const blob = new Blob([screenshotBuffer as Uint8Array], {
 			type: "image/png",
 		});
@@ -46,22 +49,14 @@ ssweb.post("/", async (c) => {
 
 		if (!uploadRes.ok) {
 			const errorText = await uploadRes.text();
-			return c.json(
-				{ status: false, message: `Upload gagal: ${errorText}` },
-				500,
-			);
+			return apiError(c, 500, `Upload gagal: ${errorText}`);
 		}
 
 		const data = (await uploadRes.json()) as any;
 
-		return c.json({
-			status: true,
-			data: {
-				url: data.Url,
-			},
-		});
+		return apiResponse(c, 200, "Success", { url: data.Url });
 	} catch (e: any) {
-		return c.json({ status: false, message: e.message }, 500);
+		return apiError(c, 500, e.message);
 	}
 });
 
