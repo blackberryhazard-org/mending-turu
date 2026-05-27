@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { prettyJSON } from "hono/pretty-json";
-import { swaggerUI } from "@hono/swagger-ui";
 
 import { Calculate } from "./routes/calculate";
 import { CfSolve } from "./routes/cfSolve";
@@ -91,10 +90,10 @@ const swaggerCustomCss = `
   .swagger-ui .response-col_description,
   .swagger-ui .tab li,
   .swagger-ui .opblock-tag {
-    color: #f1f5f9;
+    color: #f1f5f9 !important;
   }
   .swagger-ui .opblock-tag small {
-    color: #cbd5e1;
+    color: #cbd5e1 !important;
   }
   .swagger-ui .scheme-container {
     background-color: #1e293b;
@@ -137,7 +136,7 @@ const swaggerCustomCss = `
     background: #1e293b;
   }
   .swagger-ui section.models h4 {
-    color: #f1f5f9;
+    color: #f1f5f9 !important;
   }
   .swagger-ui section.models .model-container {
     background: #0f172a;
@@ -156,13 +155,41 @@ const swaggerCustomCss = `
   }
 `;
 
-app.get(
-	"/docs",
-	swaggerUI({
-		url: "/openapi.json",
-		customCss: swaggerCustomCss,
-	}),
-);
+app.get("/docs", (c) => {
+	return c.html(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="SwaggerUI" />
+  <title>SwaggerUI</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+  <style>
+    ${swaggerCustomCss}
+  </style>
+</head>
+<body>
+<div id="swagger-ui"></div>
+<script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js" crossorigin="anonymous"></script>
+<script>
+  window.onload = () => {
+    window.ui = SwaggerUIBundle({
+      url: '/openapi.json',
+      dom_id: '#swagger-ui',
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ],
+      layout: "BaseLayout"
+    });
+  };
+</script>
+</body>
+</html>
+`);
+});
 
 app.get("/donate", (c) => {
 	return c.redirect(
